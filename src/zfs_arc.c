@@ -71,7 +71,7 @@ static int put_zfs_value (kstat_t *ksp, char const *k, value_t v)
 	return 0;
 }
 
-static long long get_zfs_value(kstat_t *ksp, char *key)
+static long long get_zfs_value(kstat_t *ksp, const char *key)
 {
 	llentry_t *e;
 	value_t *v;
@@ -286,7 +286,10 @@ static int za_read (void)
 	za_read_derive (ksp, "deleted",  "cache_operation", "deleted");
 #if __FreeBSD__
 	za_read_derive (ksp, "allocated","cache_operation", "allocated");
+#if defined(__FreeBSD_version) && (__FreeBSD_version < 1002501)
+	/* stolen removed from sysctl kstat.zfs.misc.arcstats on FreeBSD 10.2+ */
 	za_read_derive (ksp, "stolen",   "cache_operation", "stolen");
+#endif
 #endif
 
 	/* Issue indicators */

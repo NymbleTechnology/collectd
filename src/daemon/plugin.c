@@ -998,7 +998,7 @@ static int plugin_mark_loaded (char const *name)
 	return (status);
 }
 
-static void plugin_free_loaded ()
+static void plugin_free_loaded (void)
 {
 	void *key;
 	void *value;
@@ -1343,7 +1343,7 @@ static void plugin_flush_timeout_callback_free (void *data)
 
 static char *plugin_flush_callback_name (const char *name)
 {
-	char *flush_prefix = "flush/";
+	const char *flush_prefix = "flush/";
 	size_t prefix_size;
 	char *flush_name;
 	size_t name_size;
@@ -1378,7 +1378,6 @@ int plugin_register_flush (const char *name,
 	if (ctx.flush_interval != 0)
 	{
 		char *flush_name;
-		user_data_t ud;
 		flush_callback_t *cb;
 
 		flush_name = plugin_flush_callback_name (name);
@@ -1403,15 +1402,15 @@ int plugin_register_flush (const char *name,
 		}
 		cb->timeout = ctx.flush_timeout;
 
-		ud.data = cb;
-		ud.free_func = plugin_flush_timeout_callback_free;
+		ud->data = cb;
+		ud->free_func = plugin_flush_timeout_callback_free;
 
 		status = plugin_register_complex_read (
 			/* group     = */ "flush",
 			/* name      = */ flush_name,
 			/* callback  = */ plugin_flush_timeout_callback,
 			/* interval  = */ ctx.flush_interval,
-			/* user data = */ &ud);
+			/* user data = */ ud);
 
 		sfree (flush_name);
 		if (status != 0)
@@ -1697,7 +1696,6 @@ int plugin_unregister_notification (const char *name)
 void plugin_init_all (void)
 {
 	char const *chain_name;
-	long write_threads_num;
 	llentry_t *le;
 	int status;
 
@@ -2402,7 +2400,7 @@ int plugin_dispatch_multivalue (value_list_t const *template, /* {{{ */
 		case DS_TYPE_GAUGE:
 			vl->values[0].gauge = va_arg (ap, gauge_t);
 			if (store_percentage)
-				vl->values[0].gauge *= 100.0 / sum;
+				vl->values[0].gauge *= sum ? (100.0 / sum) : 0;
 			break;
 		case DS_TYPE_ABSOLUTE:
 			vl->values[0].absolute = va_arg (ap, absolute_t);

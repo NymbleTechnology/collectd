@@ -390,7 +390,7 @@ static int cpy_write_callback(const data_set_t *ds, const value_list_t *value_li
 		}
 		dict = PyDict_New();  /* New reference. */
 		if (value_list->meta) {
-			int i, num;
+			int num;
 			char **table;
 			meta_data_t *meta = value_list->meta;
 
@@ -1050,7 +1050,7 @@ PyMODINIT_FUNC PyInit_collectd(void) {
 }
 #endif
 
-static int cpy_init_python() {
+static int cpy_init_python(void) {
 	PyObject *sys;
 	PyObject *module;
 

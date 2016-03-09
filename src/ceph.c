@@ -96,7 +96,7 @@ enum ceph_dset_type_d
 };
 
 /** Valid types for ceph defined in types.db */
-const char * ceph_dset_types [CEPH_DSET_TYPES_NUM] =
+static const char * const ceph_dset_types [CEPH_DSET_TYPES_NUM] =
                                    {"ceph_latency", "ceph_bytes", "ceph_rate"};
 
 /******* ceph_daemon *******/
@@ -1096,7 +1096,7 @@ static int cconn_connect(struct cconn *io)
     fd = socket(PF_UNIX, SOCK_STREAM, 0);
     if(fd < 0)
     {
-        int err = -errno;
+        err = -errno;
         ERROR("ceph plugin: cconn_connect: socket(PF_UNIX, SOCK_STREAM, 0) "
             "failed: error %d", err);
         return err;
@@ -1545,7 +1545,7 @@ static int cconn_main_loop(uint32_t request_type)
             }
             else
             {
-                int ret = cconn_handle_event(io);
+                ret = cconn_handle_event(io);
                 if(ret)
                 {
                     WARNING("ceph plugin: cconn_handle_event(name=%s,"

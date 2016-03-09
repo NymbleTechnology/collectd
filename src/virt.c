@@ -833,7 +833,7 @@ refresh_lists (void)
 }
 
 static void
-free_domains ()
+free_domains (void)
 {
     int i;
 
@@ -866,7 +866,7 @@ add_domain (virDomainPtr dom)
 }
 
 static void
-free_block_devices ()
+free_block_devices (void)
 {
     int i;
 
@@ -906,7 +906,7 @@ add_block_device (virDomainPtr dom, const char *path)
 }
 
 static void
-free_interface_devices ()
+free_interface_devices (void)
 {
     int i;
 

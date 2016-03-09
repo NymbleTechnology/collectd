@@ -29,7 +29,7 @@ m4_ifdef([LT_PACKAGE_VERSION],
 	]
 )
 
-AM_CONDITIONAL([BUILD_INCLUDED_LTDL], [test "x$LTDLDEPS" != "x"])
+AM_CONDITIONAL([BUILD_INCLUDED_LTDL], [test "x${LIBLTDL}" = 'x${top_builddir}/libltdl/libltdlc.la'])
 
 AM_INIT_AUTOMAKE([tar-pax dist-bzip2 foreign])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -44,6 +44,7 @@ AC_SYS_LARGEFILE
 #
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_EGREP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -59,6 +60,18 @@ AC_PROG_YACC
 m4_pattern_forbid([^_?PKG_[A-Z_]+$],[*** pkg.m4 missing, please install pkg-config])
 
 PKG_PROG_PKG_CONFIG
+
+AC_CACHE_CHECK([if bison is the parser generator],
+	[collectd_cv_prog_bison],
+	[AS_IF([$YACC --version 2>/dev/null | $EGREP -q '^bison '],
+		[collectd_cv_prog_bison=yes], [collectd_cv_prog_bison=no]
+	)]
+)
+
+if test "x$collectd_cv_prog_bison" = "xno" && test ! -f "${srcdir}/src/liboconfig/parser.c"
+then
+	AC_MSG_ERROR([bison is missing and you do not have ${srcdir}/src/liboconfig/parser.c. Please install bison])
+fi
 
 AC_CHECK_PROG([have_protoc_c], [protoc-c], [yes], [no])
 if test "x$have_protoc_c" = "xno"
@@ -98,6 +111,10 @@ case $host_os in
 	*openbsd*)
 	AC_DEFINE([KERNEL_OPENBSD], 1, [True if program is to be compiled for an OpenBSD kernel])
 	ac_system="OpenBSD"
+	;;
+	*netbsd*)
+	AC_DEFINE([KERNEL_NETBSD], 1, [True if program is to be compiled for a NetBSD kernel])
+	ac_system="NetBSD"
 	;;
 	*aix*)
 	AC_DEFINE([KERNEL_AIX], 1, [True if program is to be compiled for a AIX kernel])
@@ -185,6 +202,19 @@ AC_HEADER_DIRENT
 AC_HEADER_STDBOOL
 
 AC_CHECK_HEADERS(stdio.h errno.h math.h stdarg.h syslog.h fcntl.h signal.h assert.h sys/types.h sys/socket.h sys/select.h poll.h netdb.h arpa/inet.h sys/resource.h sys/param.h kstat.h regex.h sys/ioctl.h endian.h sys/isa_defs.h fnmatch.h libgen.h)
+
+# For entropy plugin on newer NetBSD
+AC_CHECK_HEADERS(sys/rndio.h, [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#if HAVE_SYS_IOCTL_H
+# include <sys/ioctl.h>
+#endif
+#if HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
+])
 
 # For ping library
 AC_CHECK_HEADERS(netinet/in_systm.h, [], [],
@@ -413,6 +443,22 @@ else
 	AC_MSG_RESULT([no])
 fi
 
+AC_MSG_CHECKING([for sysctl kern.cp_time])
+if test -x /sbin/sysctl
+then
+	/sbin/sysctl kern.cp_time >/dev/null 2>&1
+	if test $? -eq 0
+	then
+		AC_MSG_RESULT([yes])
+		AC_DEFINE(HAVE_SYSCTL_KERN_CP_TIME, 1,
+			[Define if sysctl supports kern.cp_time])
+	else
+		AC_MSG_RESULT([no])
+	fi
+else
+	AC_MSG_RESULT([no])
+fi
+
 # For hddtemp module
 AC_CHECK_HEADERS(linux/major.h)
 
@@ -431,7 +477,7 @@ else
 	have_linux_raid_md_u_h="no"
 fi
 
-# For the swap module
+# For the wireless module
 have_linux_wireless_h="no"
 if test "x$ac_system" = "xLinux"
 then
@@ -692,13 +738,9 @@ AC_CHECK_HEADERS(sys/capability.h)
 # Checks for typedefs, structures, and compiler characteristics.
 #
 AC_C_CONST
-AC_C_INLINE
-AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
-AC_TYPE_SSIZE_T
 AC_TYPE_UID_T
-AC_TYPE_UINT32_T
 AC_HEADER_TIME
 
 #
@@ -1436,6 +1478,24 @@ AC_CHECK_MEMBERS([struct kinfo_proc.p_pid, struct kinfo_proc.p_vm_rssize],
 #include <sys/sysctl.h>
 #include <kvm.h>
 	])
+
+
+AC_CHECK_MEMBERS([struct kinfo_proc2.p_pid, struct kinfo_proc2.p_uru_maxrss],
+	[
+		AC_DEFINE(HAVE_STRUCT_KINFO_PROC2_NETBSD, 1,
+			[Define if struct kinfo_proc2 exists in the NetBSD variant.])
+		have_struct_kinfo_proc2_netbsd="yes"
+	],
+	[
+		have_struct_kinfo_proc2_netbsd="no"
+	],
+	[
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <kvm.h>
+	])
+
+
 
 AC_CHECK_MEMBERS([struct udphdr.uh_dport, struct udphdr.uh_sport], [], [],
 [#define _BSD_SOURCE
@@ -5608,6 +5668,14 @@ then
 	plugin_tcpconns="yes"
 fi
 
+if test "x$ac_system" = "xNetBSD"
+then
+	plugin_entropy="yes"
+	plugin_irq="yes"
+	plugin_processes="yes"
+	plugin_disk="yes"
+fi
+
 # Mac OS X devices
 if test "x$with_libiokit" = "xyes"
 then
@@ -5855,6 +5923,11 @@ then
 fi
 
 if test "x$have_swapctl" = "xyes" && test "x$c_cv_have_swapctl_two_args" = "xyes"
+then
+	plugin_swap="yes"
+fi
+
+if test "x$have_swapctl" = "xyes" && test "x$c_cv_have_swapctl_three_args" = "xyes"
 then
 	plugin_swap="yes"
 fi

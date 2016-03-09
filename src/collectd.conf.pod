@@ -2531,7 +2531,7 @@ a more detailed description see B<IgnoreSelected> below.
 
 =item B<IgnoreSelected> I<true>|I<false>
 
-If no configuration if given, the B<traffic>-plugin will collect data from
+If no configuration if given, the B<interface>-plugin will collect data from
 all interfaces. This may not be practical, especially for loopback- and
 similar interfaces. Thus, you can use the B<Interface>-option to pick the
 interfaces you're interested in. Sometimes, however, it's easier/preferred
@@ -4500,6 +4500,18 @@ Sets the I<command file> to write to. Defaults to F</usr/local/nagios/var/rw/nag
 
 =head2 Plugin C<ntpd>
 
+The C<ntpd> plugin collects per-peer ntpd data such as time offset and time
+dispersion.
+
+For talking to B<ntpd>, it mimics what the B<ntpdc> control program does on
+wire - using B<mode 7> specific requests. This mode is deprecated with
+newer B<ntpd> releases (4.2.7p230 and later). For the C<ntpd> plugin to work
+correctly with them, the ntp daemon must be explicitly configured to
+enable B<mode 7> (which is disabled by default). Refer to the I<ntp.conf(5)>
+manual page for details.
+
+Available configuration options for the C<ntpd> plugin:
+
 =over 4
 
 =item B<Host> I<Hostname>
@@ -6288,9 +6300,9 @@ removed from the internal cache.
 
 =item B<CounterSum> B<false>|B<true>
 
-When enabled, create a C<count> metric which reports the change since the last
+When enabled, creates a C<count> metric which reports the change since the last
 read. This option primarily exists for compatibility with the I<statsd>
-impelemtation by Etsy.
+implementation by Etsy.
 
 =item B<TimerPercentile> I<Percent>
 

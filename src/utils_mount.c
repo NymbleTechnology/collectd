@@ -12,10 +12,9 @@
  * ranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public Licence for more details.
  *
- * You should have received a copy of the GNU General Public
- * Licence along with this program; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
- * USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  *
  * Author:
  *   Niki W. Waibel <niki.waibel@gmx.net>
@@ -430,16 +429,16 @@ static cu_mount_t *cu_mount_listmntent (void)
 #elif HAVE_GETVFSSTAT || HAVE_GETFSSTAT
 static cu_mount_t *cu_mount_getfsstat (void)
 {
-#if HAVE_GETVFSSTAT
-#  define STRUCT_STATFS struct statvfs
-#  define CMD_STATFS    getvfsstat
-#  define FLAGS_STATFS  ST_NOWAIT
-/* #endif HAVE_GETVFSSTAT */
-#elif HAVE_GETFSSTAT
+#if HAVE_GETFSSTAT
 #  define STRUCT_STATFS struct statfs
 #  define CMD_STATFS    getfsstat
 #  define FLAGS_STATFS  MNT_NOWAIT
-#endif /* HAVE_GETFSSTAT */
+/* #endif HAVE_GETFSSTAT */
+#elif HAVE_GETVFSSTAT
+#  define STRUCT_STATFS struct statvfs
+#  define CMD_STATFS    getvfsstat
+#  define FLAGS_STATFS  ST_NOWAIT
+#endif /* HAVE_GETVFSSTAT */
 
 	int bufsize;
 	STRUCT_STATFS *buf;
@@ -758,7 +757,7 @@ void cu_mount_freelist (cu_mount_t *list)
 } /* void cu_mount_freelist(cu_mount_t *list) */
 
 char *
-cu_mount_checkoption(char *line, char *keyword, int full)
+cu_mount_checkoption(char *line, const char *keyword, int full)
 {
 	char *line2, *l2, *p1, *p2;
 	int l;
@@ -799,7 +798,7 @@ cu_mount_checkoption(char *line, char *keyword, int full)
 } /* char *cu_mount_checkoption(char *line, char *keyword, int full) */
 
 char *
-cu_mount_getoptionvalue(char *line, char *keyword)
+cu_mount_getoptionvalue(char *line, const char *keyword)
 {
 	char *r;
 
@@ -821,7 +820,7 @@ cu_mount_getoptionvalue(char *line, char *keyword)
 		}
 	}
 	return r;
-} /* char *cu_mount_getoptionvalue(char *line, char *keyword) */
+} /* char *cu_mount_getoptionvalue(char *line, const char *keyword) */
 
 int
 cu_mount_type(const char *type)
