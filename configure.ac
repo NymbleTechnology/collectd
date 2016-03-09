@@ -1596,6 +1596,193 @@ then
 	 AC_DEFINE(HAVE_PROCINFO_H, 1, [Define to 1 if you have the procinfo.h])
 fi
 
+# --with-libjson {{{
+AC_ARG_WITH(libjson, [AS_HELP_STRING([--with-libjson@<:@=PREFIX@:>@], [Path to libjson.])],
+[
+ if test "x$withval" = "xyes"
+ then
+	 with_libjson="yes"
+	 LIBJSON_CPPFLAGS="$LIBJSON_CPPFLAGS -I$withval/include"
+	 LIBJSON_LDFLAGS="$LIBJSON_LDFLAGS -L$withval/lib"
+ else if test "x$withval" = "xno"
+ then
+	 with_libjson="no"
+ else
+	 with_libjson="yes"
+	 LIBJSON_CPPFLAGS="$LIBJSON_CPPFLAGS -I$withval/include"
+	 LIBJSON_LDFLAGS="$LIBJSON_LDFLAGS -L$withval/lib"
+ fi; fi
+],
+[with_libjson="yes"])
+
+SAVE_CPPFLAGS="$CPPFLAGS"
+SAVE_LDFLAGS="$LDFLAGS"
+
+CPPFLAGS="$CPPFLAGS $LIBJSON_CPPFLAGS"
+LDFLAGS="$LDFLAGS $LIBJSON_LDFLAGS"
+
+if test "x$with_libjson" = "xyes"
+then
+	if test "x$LIBJSON_CPPFLAGS" != "x"
+	then
+		AC_MSG_NOTICE([libjson CPPFLAGS: $LIBJSON_CPPFLAGS])
+	fi
+	AC_CHECK_HEADERS(json-c/json.h,
+	[with_libjson="yes"],
+	[with_libjson="no (json.h not found)"])
+fi
+if test "x$with_libjson" = "xyes"
+then
+	if test "x$LIBJSON_LDFLAGS" != "x"
+	then
+		AC_MSG_NOTICE([libjson LDFLAGS: $LIBJSON_LDFLAGS])
+	fi
+	AC_CHECK_LIB(json, json_object_new_object,
+	[with_libjson="yes"],
+	[with_libjson="no (symbol 'json_object_new_object' not found)"])
+fi
+
+CPPFLAGS="$SAVE_CPPFLAGS"
+LDFLAGS="$SAVE_LDFLAGS"
+
+if test "x$with_libjson" = "xyes"
+then
+	BUILD_WITH_LIBJSON_CPPFLAGS="$LIBJSON_CPPFLAGS"
+	BUILD_WITH_LIBJSON_LDFLAGS="$LIBJSON_LDFLAGS"
+	BUILD_WITH_LIBJSON_LIBS="-ljson"
+	AC_SUBST(BUILD_WITH_LIBJSON_CPPFLAGS)
+	AC_SUBST(BUILD_WITH_LIBJSON_LDFLAGS)
+	AC_SUBST(BUILD_WITH_LIBJSON_LIBS)
+fi
+AM_CONDITIONAL(BUILD_WITH_LIBJSON, test "x$with_libjson" = "xyes")
+# }}}
+
+# --with-jsonrpc_base {{{
+# Enable or not the base jsonrpc callbacks
+AC_ARG_WITH(jsonrpc_base,
+	      [AS_HELP_STRING([--with-jsonrpc_base], [Enable base callbacks for jsonrpc plugin (default=yes)])],
+[
+ if test "x$withval" = "xyes"
+ then
+	 with_jsonrpc_base="yes"
+ else if test "x$withval" = "xno"
+ then
+	 with_jsonrpc_base="no"
+ else
+	 with_jsonrpc_base="yes"
+ fi; fi
+],
+[with_jsonrpc_base="yes"])
+if test "x$with_jsonrpc_base" = "xyes"
+then
+	AC_DEFINE(JSONRPC_USE_BASE,        1, [Define to enable jsonrpc base callbacks.])
+	AM_CONDITIONAL(BUILD_JSONRPC_USE_BASE, test "x$with_jsonrpc_base" = "xyes")
+fi
+# }}}
+
+# --with-jsonrpc_perfwatcher {{{
+# Enable or not the perfwatcher jsonrpc callbacks
+AC_ARG_WITH(jsonrpc_perfwatcher,
+	      [AS_HELP_STRING([--with-jsonrpc_perfwatcher], [Enable perfwatcher callbacks for jsonrpc plugin (default=yes)])],
+[
+ if test "x$withval" = "xyes"
+ then
+	 with_jsonrpc_perfwatcher="yes"
+ else if test "x$withval" = "xno"
+ then
+	 with_jsonrpc_perfwatcher="no"
+ else
+	 with_jsonrpc_perfwatcher="yes"
+ fi; fi
+],
+[with_jsonrpc_perfwatcher="yes"])
+if test "x$with_jsonrpc_perfwatcher" = "xyes"
+then
+	AC_DEFINE(JSONRPC_USE_PERFWATCHER,        1, [Define to enable jsonrpc perfwatcher callbacks.])
+	AM_CONDITIONAL(BUILD_JSONRPC_USE_PERFWATCHER, test "x$with_jsonrpc_perfwatcher" = "xyes")
+fi
+# }}}
+
+# --with-jsonrpc_topps {{{
+# Enable or not the topps jsonrpc callbacks
+AC_ARG_WITH(jsonrpc_topps,
+	      [AS_HELP_STRING([--with-jsonrpc_topps], [Enable topps callbacks for jsonrpc plugin (default=yes)])],
+[
+ if test "x$withval" = "xyes"
+ then
+	 with_jsonrpc_topps="yes"
+ else if test "x$withval" = "xno"
+ then
+	 with_jsonrpc_topps="no"
+ else
+	 with_jsonrpc_topps="yes"
+ fi; fi
+],
+[with_jsonrpc_topps="yes"])
+# }}}
+
+# --with-libmicrohttpd {{{
+AC_ARG_WITH(libmicrohttpd, [AS_HELP_STRING([--with-libmicrohttpd@<:@=PREFIX@:>@], [Path to libmicrohttpd.])],
+[
+ if test "x$withval" = "xyes"
+ then
+	 with_libmicrohttpd="yes"
+	 LIBMICROHTTPD_CPPFLAGS="$LIBMICROHTTPD_CPPFLAGS -I$withval/include"
+	 LIBMICROHTTPD_LDFLAGS="$LIBMICROHTTPD_LDFLAGS -L$withval/lib"
+ else if test "x$withval" = "xno"
+ then
+	 with_libmicrohttpd="no"
+ else
+	 with_libmicrohttpd="yes"
+	 LIBMICROHTTPD_CPPFLAGS="$LIBMICROHTTPD_CPPFLAGS -I$withval/include"
+	 LIBMICROHTTPD_LDFLAGS="$LIBMICROHTTPD_LDFLAGS -L$withval/lib"
+ fi; fi
+],
+[with_libmicrohttpd="yes"])
+
+SAVE_CPPFLAGS="$CPPFLAGS"
+SAVE_LDFLAGS="$LDFLAGS"
+
+CPPFLAGS="$CPPFLAGS $LIBMICROHTTPD_CPPFLAGS"
+LDFLAGS="$LDFLAGS $LIBMICROHTTPD_LDFLAGS"
+
+if test "x$with_libmicrohttpd" = "xyes"
+then
+	if test "x$LIBMICROHTTPD_CPPFLAGS" != "x"
+	then
+		AC_MSG_NOTICE([libmicrohttpd CPPFLAGS: $LIBMICROHTTPD_CPPFLAGS])
+	fi
+	AC_CHECK_HEADERS(microhttpd.h,
+	[with_libmicrohttpd="yes"],
+	[with_libmicrohttpd="no (microhttpd.h not found)"])
+fi
+if test "x$with_libmicrohttpd" = "xyes"
+then
+	if test "x$LIBMICROHTTPD_LDFLAGS" != "x"
+	then
+		AC_MSG_NOTICE([libmicrohttpd LDFLAGS: $LIBMICROHTTPD_LDFLAGS])
+	fi
+	AC_CHECK_LIB(microhttpd, MHD_get_version,
+	[with_libmicrohttpd="yes"],
+	[with_libmicrohttpd="no (symbol 'microhttpd_info' not found)"])
+fi
+
+CPPFLAGS="$SAVE_CPPFLAGS"
+LDFLAGS="$SAVE_LDFLAGS"
+
+if test "x$with_libmicrohttpd" = "xyes"
+then
+	BUILD_WITH_LIBMICROHTTPD_CPPFLAGS="$LIBMICROHTTPD_CPPFLAGS"
+	BUILD_WITH_LIBMICROHTTPD_LDFLAGS="$LIBMICROHTTPD_LDFLAGS"
+	BUILD_WITH_LIBMICROHTTPD_LIBS="-lmicrohttpd"
+	AC_SUBST(BUILD_WITH_LIBMICROHTTPD_CPPFLAGS)
+	AC_SUBST(BUILD_WITH_LIBMICROHTTPD_LDFLAGS)
+	AC_SUBST(BUILD_WITH_LIBMICROHTTPD_LIBS)
+fi
+AM_CONDITIONAL(BUILD_WITH_LIBMICROHTTPD, test "x$with_libmicrohttpd" = "xyes")
+# }}}
+
+
 if test "x$ac_system" = "xSolaris"
 then
 	with_kstat="yes"
@@ -3217,6 +3404,55 @@ then
 fi
 AM_CONDITIONAL(BUILD_WITH_LIBOPING, test "x$with_liboping" = "xyes")
 # }}}
+
+# --with-libz {{{
+with_libz_cppflags=""
+with_libz_libs="-lz"
+AC_ARG_WITH(libz, [AS_HELP_STRING([--with-libz@<:@=PREFIX@:>@], [Path to libz.])],
+[
+	if test "x$withval" != "xno" && test "x$withval" != "xyes"
+	then
+		with_libz_cppflags="-I$withval/include"
+		with_libz_libs="-L$withval/lib -lz"
+		with_libz="yes"
+	else
+		with_libz="$withval"
+	fi
+],
+[
+	with_libz="yes"
+])
+if test "x$with_libz" = "xyes"
+then
+	SAVE_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$with_libz_cppflags"
+
+	AC_CHECK_HEADERS(zlib.h, [with_libz="yes"], [with_libz="no (zlib.h not found)"])
+
+	CPPFLAGS="$SAVE_CPPFLAGS"
+fi
+if test "x$with_libz" = "xyes"
+then
+	SAVE_LDFLAGS="$LDFLAGS"
+	SAVE_CPPFLAGS="$CPPFLAGS"
+	LDFLAGS="$with_libz_libs"
+	CPPFLAGS="$with_libz_cppflags"
+
+	AC_CHECK_LIB(z, gzopen, [with_libz="yes"], [with_libz="no (libz not found)"])
+
+	LDFLAGS="$SAVE_LDFLAGS"
+	CPPFLAGS="$SAVE_CPPFLAGS"
+fi
+if test "x$with_libz" = "xyes"
+then
+	BUILD_WITH_LIBZ_CPPFLAGS="$with_libz_cppflags"
+	BUILD_WITH_LIBZ_LIBS="$with_libz_libs"
+	AC_SUBST(BUILD_WITH_LIBZ_CPPFLAGS)
+	AC_SUBST(BUILD_WITH_LIBZ_LIBS)
+fi
+AM_CONDITIONAL(BUILD_WITH_LIBZ, test "x$with_libz" = "xyes")
+# }}}
+
 
 # --with-oracle {{{
 with_oracle_cppflags=""
@@ -5275,6 +5511,7 @@ plugin_ascent="no"
 plugin_barometer="no"
 plugin_battery="no"
 plugin_bind="no"
+plugin_canbus="no"
 plugin_ceph="no"
 plugin_cgroups="no"
 plugin_conntrack="no"
@@ -5294,6 +5531,7 @@ plugin_interface="no"
 plugin_ipmi="no"
 plugin_ipvs="no"
 plugin_irq="no"
+plugin_jsonrpc="no"
 plugin_load="no"
 plugin_log_logstash="no"
 plugin_memory="no"
@@ -5324,6 +5562,7 @@ plugin_zookeeper="no"
 if test "x$ac_system" = "xLinux"
 then
 	plugin_battery="yes"
+	plugin_canbus="yes"
 	plugin_conntrack="yes"
 	plugin_contextswitch="yes"
 	plugin_cgroups="yes"
@@ -5510,6 +5749,11 @@ then
 	plugin_tcpconns="yes"
 fi
 
+if test "x$with_libmicrohttpd" = "xyes" && test "x$with_libjson" = "xyes"
+then
+	plugin_jsonrpc="yes"
+fi
+
 # Df plugin: Check if we know how to determine mount points first.
 #if test "x$have_listmntent" = "xyes"; then
 #	plugin_df="yes"
@@ -5634,6 +5878,15 @@ then
 	plugin_virt="yes"
 fi
 
+dnl jsonrpc topps extension (needs zlib)
+if test "x$with_libz" = "xyes"  && \
+	test "x$with_jsonrpc_topps" = "xyes"
+then
+	AC_DEFINE(JSONRPC_USE_TOPPS,        1, [Define to enable jsonrpc topps callbacks.])
+else
+	with_jsonrpc_topps=no
+fi
+AM_CONDITIONAL(BUILD_JSONRPC_USE_TOPPS, test "x$with_jsonrpc_topps" = "xyes")
 
 m4_divert_once([HELP_ENABLE], [
 collectd plugins:])
@@ -5665,6 +5918,7 @@ AC_PLUGIN([ascent],      [$plugin_ascent],     [AscentEmu player statistics])
 AC_PLUGIN([barometer],   [$plugin_barometer],  [Barometer sensor on I2C])
 AC_PLUGIN([battery],     [$plugin_battery],    [Battery statistics])
 AC_PLUGIN([bind],        [$plugin_bind],       [ISC Bind nameserver statistics])
+AC_PLUGIN([canbus],      [$plugin_canbus],     [parameters broadcast on CANbus])
 AC_PLUGIN([ceph],        [$plugin_ceph],       [Ceph daemon statistics])
 AC_PLUGIN([conntrack],   [$plugin_conntrack],  [nf_conntrack statistics])
 AC_PLUGIN([contextswitch], [$plugin_contextswitch], [context switch statistics])
@@ -5696,6 +5950,10 @@ AC_PLUGIN([iptables],    [$with_libiptc],      [IPTables rule counters])
 AC_PLUGIN([ipvs],        [$plugin_ipvs],       [IPVS connection statistics])
 AC_PLUGIN([irq],         [$plugin_irq],        [IRQ statistics])
 AC_PLUGIN([java],        [$with_java],         [Embed the Java Virtual Machine])
+AC_PLUGIN([jsonrpc],     [$plugin_jsonrpc],    [Json-RPC communication plugin])
+AC_PLUGIN([jsonrpc_base],        [$with_jsonrpc_base],        [Json-RPC : base])
+AC_PLUGIN([jsonrpc_perfwatcher], [$with_jsonrpc_perfwatcher], [Json-RPC : perfwatcher helpers])
+AC_PLUGIN([jsonrpc_topps],       [$with_jsonrpc_topps],       [Json-RPC : topps helpers])
 AC_PLUGIN([load],        [$plugin_load],       [System load])
 AC_PLUGIN([logfile],     [yes],                [File logging plugin])
 AC_PLUGIN([log_logstash], [$plugin_log_logstash], [Logstash json_event compatible logging])
@@ -6046,6 +6304,7 @@ Configuration:
     oracle  . . . . . . . $with_oracle
     protobuf-c  . . . . . $have_protoc_c
     python  . . . . . . . $with_python
+    zlib  . . . . . . . . $with_libz
 
   Features:
     daemon mode . . . . . $enable_daemon
@@ -6065,6 +6324,7 @@ Configuration:
     barometer . . . . . . $enable_barometer
     battery . . . . . . . $enable_battery
     bind  . . . . . . . . $enable_bind
+    canbus  . . . . . . . $enable_canbus
     ceph  . . . . . . . . $enable_ceph
     cgroups . . . . . . . $enable_cgroups
     conntrack . . . . . . $enable_conntrack
@@ -6096,6 +6356,10 @@ Configuration:
     ipvs  . . . . . . . . $enable_ipvs
     irq . . . . . . . . . $enable_irq
     java  . . . . . . . . $enable_java
+    jsonrpc . . . . . . . $enable_jsonrpc
+    jsonrpc_base  . . . . $enable_jsonrpc_base
+    jsonrpc_perfwatcher . $enable_jsonrpc_perfwatcher
+    jsonrpc_topps . . . . $enable_jsonrpc_topps
     load  . . . . . . . . $enable_load
     logfile . . . . . . . $enable_logfile
     log_logstash  . . . . $enable_log_logstash

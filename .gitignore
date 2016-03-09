@@ -80,3 +80,8 @@ test_*
 
 # src/daemon/...
 src/daemon/collectd
+
+x86.build
+x86.conf
+ppc.build
+ppc.conf

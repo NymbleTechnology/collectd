@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="collectd" />
+		<Option makefile="collectd.mk" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="x86">
+				<Option output="x86/collectd" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/x86/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="ppc">
+				<Option output="ppc/collectd" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/ppc/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="canbus_types.db" />
+		<Unit filename="collectd.mk" />
+		<Unit filename="configure.ac" />
+		<Unit filename="contrib/GenericJMX.conf" />
+		<Unit filename="contrib/README" />
+		<Unit filename="contrib/SpamAssassin/Collectd.pm" />
+		<Unit filename="contrib/SpamAssassin/example.cf" />
+		<Unit filename="contrib/add_rra.sh" />
+		<Unit filename="contrib/aix/collectd.spec" />
+		<Unit filename="contrib/aix/init.d-collectd" />
+		<Unit filename="contrib/collectd2html.pl" />
+		<Unit filename="contrib/collectd_network.py" />
+		<Unit filename="contrib/collectd_unix_sock.rb" />
+		<Unit filename="contrib/collectd_unixsock.py" />
+		<Unit filename="contrib/collection.cgi" />
+		<Unit filename="contrib/collection.conf" />
+		<Unit filename="contrib/collection3/README" />
+		<Unit filename="contrib/collection3/bin/graph.cgi" />
+		<Unit filename="contrib/collection3/bin/index.cgi" />
+		<Unit filename="contrib/collection3/bin/json.cgi" />
+		<Unit filename="contrib/collection3/etc/collection.conf" />
+		<Unit filename="contrib/collection3/lib/Collectd/Config.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Common.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Config.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/ArcCounts.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/Df.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/GenericIO.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/GenericStacked.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/JavaMemory.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/Load.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/PsCputime.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/TableSize.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/Type/Wirkleistung.pm" />
+		<Unit filename="contrib/collection3/lib/Collectd/Graph/TypeLoader.pm" />
+		<Unit filename="contrib/collection3/share/navigate.js" />
+		<Unit filename="contrib/collection3/share/shortcut-icon.png" />
+		<Unit filename="contrib/collection3/share/style.css" />
+		<Unit filename="contrib/cussh.pl" />
+		<Unit filename="contrib/examples/MyPlugin.pm" />
+		<Unit filename="contrib/examples/myplugin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contrib/exec-ksm.sh" />
+		<Unit filename="contrib/exec-munin.conf" />
+		<Unit filename="contrib/exec-munin.px" />
+		<Unit filename="contrib/exec-nagios.conf" />
+		<Unit filename="contrib/exec-nagios.px" />
+		<Unit filename="contrib/exec-smartctl" />
+		<Unit filename="contrib/iptables/accounting.sh" />
+		<Unit filename="contrib/migrate-3-4.px" />
+		<Unit filename="contrib/migrate-4-5.px" />
+		<Unit filename="contrib/network-proxy.py" />
+		<Unit filename="contrib/oracle/create_schema.ddl" />
+		<Unit filename="contrib/oracle/db_systat.sql" />
+		<Unit filename="contrib/php-collection/browser.js" />
+		<Unit filename="contrib/php-collection/config.php" />
+		<Unit filename="contrib/php-collection/definitions.local.php" />
+		<Unit filename="contrib/php-collection/definitions.php" />
+		<Unit filename="contrib/php-collection/functions.php" />
+		<Unit filename="contrib/php-collection/graph.php" />
+		<Unit filename="contrib/php-collection/index.php" />
+		<Unit filename="contrib/postgresql/collectd_insert.sql" />
+		<Unit filename="contrib/python/getsigchld.py" />
+		<Unit filename="contrib/redhat/collectd.spec" />
+		<Unit filename="contrib/redhat/collection3.conf" />
+		<Unit filename="contrib/redhat/init.d-collectd" />
+		<Unit filename="contrib/redhat/php-collection.conf" />
+		<Unit filename="contrib/rrd_filter.px" />
+		<Unit filename="contrib/sles10.1/collectd.spec" />
+		<Unit filename="contrib/sles10.1/init.d-collectd" />
+		<Unit filename="contrib/snmp-data.conf" />
+		<Unit filename="contrib/snmp-probe-host.px" />
+		<Unit filename="contrib/solaris-smf/README" />
+		<Unit filename="contrib/solaris-smf/collectd" />
+		<Unit filename="contrib/solaris-smf/collectd.xml" />
+		<Unit filename="contrib/systemd.collectd.service" />
+		<Unit filename="contrib/upstart.collectd.conf" />
+		<Unit filename="contrib/wiki2changelog.pl" />
+		<Unit filename="src/Makefile.am" />
+		<Unit filename="src/aggregation.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/amqp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/apache.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/apcups.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/apple_sensors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/aquaero.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ascent.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/barometer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/battery.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/bind.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/canbus.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ceph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ceph_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/cgroups.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/collectd-email.pod" />
+		<Unit filename="src/collectd-exec.pod" />
+		<Unit filename="src/collectd-java.pod" />
+		<Unit filename="src/collectd-nagios.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/collectd-nagios.pod" />
+		<Unit filename="src/collectd-perl.pod" />
+		<Unit filename="src/collectd-python.pod" />
+		<Unit filename="src/collectd-snmp.pod" />
+		<Unit filename="src/collectd-tg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/collectd-tg.pod" />
+		<Unit filename="src/collectd-threshold.pod" />
+		<Unit filename="src/collectd-unixsock.pod" />
+		<Unit filename="src/collectd.conf.in" />
+		<Unit filename="src/collectd.conf.pod" />
+		<Unit filename="src/collectd.pod" />
+		<Unit filename="src/collectdctl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/collectdctl.pod" />
+		<Unit filename="src/collectdmon.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/collectdmon.pod" />
+		<Unit filename="src/conntrack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/contextswitch.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/cpu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/cpufreq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/cpython.h" />
+		<Unit filename="src/csv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/curl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/curl_json.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/curl_xml.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/Makefile.am" />
+		<Unit filename="src/daemon/collectd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/collectd.h" />
+		<Unit filename="src/daemon/common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/common.h" />
+		<Unit filename="src/daemon/common_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/configfile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/configfile.h" />
+		<Unit filename="src/daemon/filter_chain.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/filter_chain.h" />
+		<Unit filename="src/daemon/meta_data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/meta_data.h" />
+		<Unit filename="src/daemon/meta_data_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/plugin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/plugin.h" />
+		<Unit filename="src/daemon/plugin_mock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/types_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/types_list.h" />
+		<Unit filename="src/daemon/utils_avltree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_avltree.h" />
+		<Unit filename="src/daemon/utils_avltree_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_cache.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_cache.h" />
+		<Unit filename="src/daemon/utils_cache_mock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_complain.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_complain.h" />
+		<Unit filename="src/daemon/utils_heap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_heap.h" />
+		<Unit filename="src/daemon/utils_heap_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_ignorelist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_ignorelist.h" />
+		<Unit filename="src/daemon/utils_llist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_llist.h" />
+		<Unit filename="src/daemon/utils_match.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_match.h" />
+		<Unit filename="src/daemon/utils_random.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_random.h" />
+		<Unit filename="src/daemon/utils_subst.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_subst.h" />
+		<Unit filename="src/daemon/utils_subst_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_tail.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_tail.h" />
+		<Unit filename="src/daemon/utils_tail_match.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_tail_match.h" />
+		<Unit filename="src/daemon/utils_threshold.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_threshold.h" />
+		<Unit filename="src/daemon/utils_time.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/daemon/utils_time.h" />
+		<Unit filename="src/daemon/utils_time_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dbi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/df.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/disk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/drbd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/email.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/entropy.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ethstat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/exec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fhcount.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filecount.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fscache.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/gmond.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/hddtemp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/interface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ipc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ipmi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/iptables.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ipvs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/irq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/java.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/jsonrpc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/jsonrpc.h" />
+		<Unit filename="src/jsonrpc_cb_base.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/jsonrpc_cb_base.h" />
+		<Unit filename="src/jsonrpc_cb_perfwatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/jsonrpc_cb_perfwatcher.h" />
+		<Unit filename="src/jsonrpc_cb_topps.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/jsonrpc_cb_topps.h" />
+		<Unit filename="src/libcollectdclient/Makefile.am" />
+		<Unit filename="src/libcollectdclient/client.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/libcollectdclient/collectd/client.h" />
+		<Unit filename="src/libcollectdclient/collectd/lcc_features.h.in" />
+		<Unit filename="src/libcollectdclient/collectd/network.h" />
+		<Unit filename="src/libcollectdclient/collectd/network_buffer.h" />
+		<Unit filename="src/libcollectdclient/libcollectdclient.pc.in" />
+		<Unit filename="src/libcollectdclient/network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/libcollectdclient/network_buffer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/liboconfig/AUTHORS" />
+		<Unit filename="src/liboconfig/COPYING" />
+		<Unit filename="src/liboconfig/ChangeLog" />
+		<Unit filename="src/liboconfig/Makefile.am" />
+		<Unit filename="src/liboconfig/aux_types.h" />
+		<Unit filename="src/liboconfig/oconfig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/liboconfig/oconfig.h" />
+		<Unit filename="src/liboconfig/parser.y">
+			<Option compile="1" />
+		</Unit>
+		<Unit filename="src/liboconfig/scanner.l">
+			<Option compile="1" />
+		</Unit>
+		<Unit filename="src/load.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/log_logstash.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/logfile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lpar.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lvm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/madwifi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/madwifi.h" />
+		<Unit filename="src/match_empty_counter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/match_hashed.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/match_regex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/match_timediff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/match_value.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mbmon.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/md.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/memcachec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/memcached.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/memory.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/modbus.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mqtt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/multimeter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mysql.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/netapp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/netlink.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network.h" />
+		<Unit filename="src/nfs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/nginx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/notify_desktop.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/notify_email.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/notify_nagios.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ntpd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/numa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/nut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/olsrd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/onewire.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/openldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/openvpn.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/oracle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/perl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/pf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/pinba.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/pinba.proto" />
+		<Unit filename="src/ping.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/postgresql.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/postgresql_default.conf" />
+		<Unit filename="src/powerdns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/processes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/protocols.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/pyconfig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/python.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/pyvalues.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/redis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/riemann.proto" />
+		<Unit filename="src/routeros.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/rrdcached.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/rrdtool.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sensors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/serial.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sigrok.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/smart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/snmp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/statsd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/swap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/syslog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tail.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tail_csv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tape.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/target_notification.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/target_replace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/target_scale.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/target_set.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/target_v5upgrade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tcpconns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/teamspeak2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ted.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/testing.h" />
+		<Unit filename="src/thermal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/threshold.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tokyotyrant.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/turbostat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/types.db" />
+		<Unit filename="src/types.db.pod" />
+		<Unit filename="src/unixsock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/uptime.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/users.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_flush.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_flush.h" />
+		<Unit filename="src/utils_cmd_getthreshold.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_getthreshold.h" />
+		<Unit filename="src/utils_cmd_getval.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_getval.h" />
+		<Unit filename="src/utils_cmd_listval.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_listval.h" />
+		<Unit filename="src/utils_cmd_putnotif.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_putnotif.h" />
+		<Unit filename="src/utils_cmd_putval.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_cmd_putval.h" />
+		<Unit filename="src/utils_crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_crc32.h" />
+		<Unit filename="src/utils_db_query.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_db_query.h" />
+		<Unit filename="src/utils_dns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_dns.h" />
+		<Unit filename="src/utils_fbhash.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_fbhash.h" />
+		<Unit filename="src/utils_format_graphite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_format_graphite.h" />
+		<Unit filename="src/utils_format_json.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_format_json.h" />
+		<Unit filename="src/utils_latency.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_latency.h" />
+		<Unit filename="src/utils_latency_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_mount.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_mount.h" />
+		<Unit filename="src/utils_mount_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_parse_option.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_parse_option.h" />
+		<Unit filename="src/utils_rrdcreate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_rrdcreate.h" />
+		<Unit filename="src/utils_vl_lookup.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/utils_vl_lookup.h" />
+		<Unit filename="src/utils_vl_lookup_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/uuid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/varnish.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/virt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/vmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/vserver.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/wireless.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_graphite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_http.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_kafka.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_mongodb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_redis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_riemann.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_riemann_threshold.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_sensu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/write_tsdb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/xmms.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zfs_arc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zone.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zookeeper.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

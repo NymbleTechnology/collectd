@@ -200,6 +200,14 @@ bind_la_CFLAGS = $(AM_CFLAGS) \
 bind_la_LIBADD = $(BUILD_WITH_LIBCURL_LIBS) $(BUILD_WITH_LIBXML2_LIBS)
 endif
 
+if BUILD_PLUGIN_CANBUS
+pkglib_LTLIBRARIES += canbus.la
+canbus_la_SOURCES = canbus.c
+canbus_la_CFLAGS = $(AM_CFLAGS)
+canbus_la_CPPFLAGS = $(AM_CPPFLAGS)
+canbus_la_LDFLAGS = $(PLUGIN_LDFLAGS)
+endif
+
 if BUILD_PLUGIN_CEPH
 pkglib_LTLIBRARIES += ceph.la
 ceph_la_SOURCES = ceph.c
@@ -486,6 +494,39 @@ java_la_CPPFLAGS = $(AM_CPPFLAGS) $(JAVA_CPPFLAGS)
 java_la_CFLAGS = $(AM_CFLAGS) $(JAVA_CFLAGS)
 java_la_LDFLAGS = $(PLUGIN_LDFLAGS) $(JAVA_LDFLAGS)
 java_la_LIBADD = $(PTHREAD_LIBS) $(JAVA_LIBS)
+endif
+
+if BUILD_PLUGIN_JSONRPC
+pkglib_LTLIBRARIES += jsonrpc.la
+jsonrpc_la_SOURCES = jsonrpc.c jsonrpc.h
+jsonrpc_la_LDFLAGS = -module -avoid-version $(BUILD_WITH_LIBMICROHTTPD_LDFLAGS) $(BUILD_WITH_LIBJSON_LDFLAGS)
+jsonrpc_la_CFLAGS = $(AM_CFLAGS) $(BUILD_WITH_LIBMICROHTTPD_CPPFLAGS) $(BUILD_WITH_LIBJSON_CPPFLAGS) $(BUILD_WITH_LIBCRYPT_CFLAGS)
+jsonrpc_la_LIBADD = $(BUILD_WITH_LIBMICROHTTPD_LIBS) $(BUILD_WITH_LIBJSON_LIBS) $(BUILD_WITH_LIBCRYPT_LIBS)
+#collectd_LDADD += "-dlopen" jsonrpc.la
+#collectd_DEPENDENCIES += jsonrpc.la
+if BUILD_JSONRPC_USE_BASE
+jsonrpc_la_SOURCES += jsonrpc_cb_base.c jsonrpc_cb_base.h
+endif
+# Define JSONRPC_GRAPH_RRDS_WITH_LIBRRD if you want to use internal rrd_graph_v() from librrd.
+# You may prefer to fork+exec rrdtool graph if you consider that librrd
+# rrd_graph_v() and its dependancies (pango at least) is not sure enough
+# (memory leaks ?) inside a daemonized web server.
+#
+# Use JSONRPC_GRAPH_RRDS_WITH_LIBRRD at your own risk !
+#
+#BUILD_WITH_LIBRRD_CFLAGS += -DJSONRPC_GRAPH_RRDS_WITH_LIBRRD
+#
+if BUILD_JSONRPC_USE_PERFWATCHER
+# Note : include base64 here. If needed somewhere else, maybe something better should be implemented ?
+jsonrpc_la_SOURCES += jsonrpc_cb_perfwatcher.c jsonrpc_cb_perfwatcher.h base64.c base64.h
+jsonrpc_la_CFLAGS += $(BUILD_WITH_LIBRRD_CFLAGS)
+jsonrpc_la_LIBADD += $(BUILD_WITH_LIBRRD_LDFLAGS)
+endif
+if BUILD_JSONRPC_USE_TOPPS
+jsonrpc_la_SOURCES += jsonrpc_cb_topps.c jsonrpc_cb_topps.h
+jsonrpc_la_LDFLAGS += $(BUILD_WITH_LIBZ_LIBS)
+jsonrpc_la_CFLAGS += $(BUILD_WITH_LIBZ_CPPFLAGS)
+endif
 endif
 
 if BUILD_PLUGIN_LOAD
