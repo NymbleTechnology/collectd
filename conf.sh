@@ -1,10 +1,18 @@
-# `configure' configures collectd 5.5.0.813.g2cf5a3b to adapt to many kinds of systems.
+#!/bin/bash
+#
+# configures collectd for cross-compilation
 #
 set -x
-./configure --disable-perl --without-perl-bindings --without-java \
-    --prefix=/usr --sysconfdir=/etc/collectd --localstatedir=/var
 
-#
+source ../setup-cross.inc
+
+OPTIONS="--build=$BUILD --host=$TARGET"
+OPTIONS="$OPTIONS --prefix=/usr --sysconfdir=/etc --localstatedir=/var --datadir=/mnt/dataflash"
+OPTIONS="$OPTIONS --disable-static --without-perl-bindings --disable-perl --disable-python --disable-java"
+OPTIONS="$OPTIONS --with-fp-layout=nothing"
+
+./configure $OPTIONS
+
 # To assign environment variables (e.g., CC, CFLAGS...), specify them as
 # VAR=VALUE.  See below for descriptions of some of the useful variables.
 #
@@ -353,8 +361,8 @@ set -x
 #               C compiler flags for LIBNOTIFY, overriding pkg-config
 #   LIBNOTIFY_LIBS
 #               linker flags for LIBNOTIFY, overriding pkg-config
-
+#
 # Use these variables to override the choices made by `configure' or to help
 # it to find libraries and programs with nonstandard names/locations.
-
+#
 # Report bugs to the package provider.

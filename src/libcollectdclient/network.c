@@ -160,6 +160,7 @@ static int server_open_socket (lcc_server_t *srv) /* {{{ */
       status = setsockopt (srv->fd, IPPROTO_IP, optname,
           &srv->ttl, sizeof (srv->ttl));
     }
+#ifdef ENABLE_IPV6
     else if (ai_ptr->ai_family == AF_INET6)
     {
       /* Useful example: http://gsyc.escet.urjc.es/~eva/IPv6-web/examples/mcast.html */
@@ -174,6 +175,7 @@ static int server_open_socket (lcc_server_t *srv) /* {{{ */
       status = setsockopt (srv->fd, IPPROTO_IPV6, optname,
           &srv->ttl, sizeof (srv->ttl));
     }
+#endif
     if (status != 0)
     {
       /* setsockopt failed. */
@@ -437,7 +439,7 @@ int lcc_server_set_interface (lcc_server_t *srv, char const *interface) /* {{{ *
       return (0);
     }
   }
-
+#ifdef ENABLE_IPV6
   /* IPv6 multicast */
   if (srv->sa->sa_family == AF_INET6)
   {
@@ -453,6 +455,7 @@ int lcc_server_set_interface (lcc_server_t *srv, char const *interface) /* {{{ *
       return (0);
     }
   }
+#endif
 
   /* else: Not a multicast interface. */
 #if defined(SO_BINDTODEVICE)

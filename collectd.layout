@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="x86" />
-	<File name="src/write_sensu.c" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src/write_tsdb.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="843" />
+			<Cursor1 position="0" topLine="556" />
 		</Cursor>
 	</File>
-	<File name="configure.ac" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
+	<File name="src/types.db" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="110131" topLine="2296" />
+			<Cursor1 position="421" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src/daemon/plugin.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -16,19 +16,9 @@
 			<Cursor1 position="11985" topLine="379" />
 		</Cursor>
 	</File>
-	<File name="collectd.mk" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src/aggregation.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="425" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/daemon/meta_data.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1513" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/sensors.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="3" />
+			<Cursor1 position="10142" topLine="319" />
 		</Cursor>
 	</File>
 	<File name="src/email.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -36,9 +26,59 @@
 			<Cursor1 position="11013" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="configure.ac" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="110131" topLine="2296" />
+		</Cursor>
+	</File>
 	<File name="src/jsonrpc_cb_topps.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="62707" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/sensors.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="src/jsonrpc.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="20814" topLine="684" />
+		</Cursor>
+	</File>
+	<File name="src/write_sensu.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="843" />
+		</Cursor>
+	</File>
+	<File name="src/write_redis.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/collectd-nagios.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2666" topLine="76" />
+		</Cursor>
+	</File>
+	<File name="src/csv.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4114" topLine="147" />
+		</Cursor>
+	</File>
+	<File name="canbus_types.db" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="759" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/canbus.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4119" topLine="165" />
+		</Cursor>
+	</File>
+	<File name="src/daemon/utils_time.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3619" topLine="46" />
 		</Cursor>
 	</File>
 	<File name="src/jsonrpc_cb_base.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,64 +91,9 @@
 			<Cursor1 position="13570" topLine="473" />
 		</Cursor>
 	</File>
-	<File name="src/write_tsdb.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="556" />
-		</Cursor>
-	</File>
-	<File name="canbus_types.db" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="759" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/daemon/utils_time.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3619" topLine="46" />
-		</Cursor>
-	</File>
-	<File name="src/types.db" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="421" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/jsonrpc.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="20814" topLine="684" />
-		</Cursor>
-	</File>
-	<File name="src/daemon/plugin.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="64906" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/write_redis.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src/aggregation.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="10142" topLine="319" />
-		</Cursor>
-	</File>
-	<File name="src/daemon/collectd.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7269" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="contrib/examples/myplugin.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="75" />
-		</Cursor>
-	</File>
-	<File name="src/canbus.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8158" topLine="349" />
-		</Cursor>
-	</File>
-	<File name="src/jsonrpc_cb_perfwatcher.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1134" topLine="12" />
 		</Cursor>
 	</File>
 	<File name="src/daemon/common.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -116,9 +101,14 @@
 			<Cursor1 position="22200" topLine="766" />
 		</Cursor>
 	</File>
-	<File name="src/collectd-nagios.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src/daemon/collectd.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2666" topLine="421" />
+			<Cursor1 position="4275" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/daemon/meta_data.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1513" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src/write_http.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -126,9 +116,29 @@
 			<Cursor1 position="11486" topLine="432" />
 		</Cursor>
 	</File>
-	<File name="src/csv.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src/jsonrpc_cb_perfwatcher.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="202" />
+			<Cursor1 position="1134" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="src/daemon/plugin.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="64906" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/daemon/collectd.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7269" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="collectd.mk" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="425" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/uuid.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5360" topLine="215" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

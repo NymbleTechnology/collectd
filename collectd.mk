@@ -2,34 +2,35 @@
 #
 #
 
-CONFIGURE = ./configure --prefix=/usr --sysconfdir=/etc/collectd --localstatedir=/var/lib/collectd
+CONFIGURE = ./configure
+CONFIGURE += --prefix=/usr --sysconfdir=/etc/collectd --localstatedir=/var/lib/collectd
 CONFIGURE += --enable-jsonrpc --without-perl-bindings --disable-perl --disable-python --disable-java
+CONFIGURE += --with-fp-layout=nothing --host=powerpc-stw-linux-uclibc
 MAKE = make -f Makefile
 NUKE = -rm -f
 
-x86: x86.build
-	$(MAKE)
-
-ppc: ppc.build
-	$(MAKE)
-
-cleanx86:
-	$(NUKE) x86.build x86.conf
-	$(MAKE) clean
-
-cleanppc:
-	$(NUKE) ppc.build ppc.conf
-	$(MAKE) clean
-
-x86.build: configure
+x86: Makefile
 	$(NUKE) ppc.build
 	touch  x86.build
-	$(CONFIGURE) --cache-file=x86.conf
+	$(MAKE)
 
-ppc.build: configure
+ppc: Makefile
+	export CROSS_COMPILE=powerpc-stw-linux-uclibc-
+	export ARCH=powerpc
 	$(NUKE) x86.build
 	touch  ppc.build
-	$(CONFIGURE) --cache-file=ppc.conf --with-fp-layout=nothing --host=powerpc-stw-linux-uclibc
+	$(MAKE)
+
+clean.x86:
+	$(MAKE) clean
+	$(NUKE) x86.build x86.conf
+
+clean.ppc:
+	$(MAKE) clean
+	$(NUKE) ppc.build ppc.conf
+
+Makefile: configure
+	$(CONFIGURE)
 
 configure:	configure.ac
 	./build.sh

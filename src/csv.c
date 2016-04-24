@@ -174,7 +174,7 @@ static int value_list_to_filename (char *buffer, size_t buffer_size,
 		return (-1);
 	}
 
-	status = strftime (ptr, ptr_size, "-%Y-%m-%d", &struct_tm);
+	status = strftime (ptr, ptr_size, "-%Y-%m-%d.csv", &struct_tm);
 	if (status == 0) /* yep, it returns zero on error. */
 	{
 		ERROR ("csv plugin: strftime failed");

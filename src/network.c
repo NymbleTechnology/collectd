@@ -79,13 +79,15 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 # endif
 #endif
 
-#ifndef IPV6_ADD_MEMBERSHIP
-# ifdef IPV6_JOIN_GROUP
-#  define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
-# else
-#  error "Neither IP_ADD_MEMBERSHIP nor IPV6_JOIN_GROUP is defined"
-# endif
-#endif /* !IP_ADD_MEMBERSHIP */
+#ifdef ENABLE_IPV6
+# ifndef IPV6_ADD_MEMBERSHIP
+#  ifdef IPV6_JOIN_GROUP
+#   define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+#  else
+#   error "Neither IPV6_ADD_MEMBERSHIP nor IPV6_JOIN_GROUP is defined"
+#  endif
+# endif /* !IP_ADD_MEMBERSHIP */
+#endif
 
 /*
  * Maximum size required for encryption / signing:
@@ -1721,6 +1723,7 @@ static int network_set_ttl (const sockent_t *se, const struct addrinfo *ai)
 			return (-1);
 		}
 	}
+#ifdef ENABLE_IPV6
 	else if (ai->ai_family == AF_INET6)
 	{
 		/* Useful example: http://gsyc.escet.urjc.es/~eva/IPv6-web/examples/mcast.html */
@@ -1743,7 +1746,7 @@ static int network_set_ttl (const sockent_t *se, const struct addrinfo *ai)
 			return (-1);
 		}
 	}
-
+#endif
 	return (0);
 } /* int network_set_ttl */
 
@@ -1792,6 +1795,7 @@ static int network_set_interface (const sockent_t *se, const struct addrinfo *ai
 			return (0);
 		}
 	}
+#ifdef ENABLE_IPV6
 	else if (ai->ai_family == AF_INET6)
 	{
 		struct sockaddr_in6 *addr = (struct sockaddr_in6 *) ai->ai_addr;
@@ -1812,6 +1816,7 @@ static int network_set_interface (const sockent_t *se, const struct addrinfo *ai
 			return (0);
 		}
 	}
+#endif
 
 	/* else: Not a multicast interface. */
 	if (se->interface != 0)
@@ -1926,6 +1931,7 @@ static int network_bind_socket (int fd, const struct addrinfo *ai, const int int
 			return (0);
 		}
 	}
+#ifdef ENABLE_IPV6
 	else if (ai->ai_family == AF_INET6)
 	{
 		/* Useful example: http://gsyc.escet.urjc.es/~eva/IPv6-web/examples/mcast.html */
@@ -1974,6 +1980,7 @@ static int network_bind_socket (int fd, const struct addrinfo *ai, const int int
 			return (0);
 		}
 	}
+#endif
 
 #if defined(HAVE_IF_INDEXTONAME) && HAVE_IF_INDEXTONAME && defined(SO_BINDTODEVICE)
 	/* if a specific interface was set, bind the socket to it. But to avoid
