@@ -4,12 +4,8 @@
 #
 set -x
 
-source ../setup-cross.inc
-
-OPTIONS="--build=$BUILD --host=$TARGET"
-OPTIONS="$OPTIONS --prefix=/usr --sysconfdir=/etc --localstatedir=/var --datadir=/mnt/dataflash"
+OPTIONS="--prefix=/usr --sysconfdir=/etc --localstatedir=/var"
 OPTIONS="$OPTIONS --disable-static --without-perl-bindings --disable-perl --disable-python --disable-java"
-OPTIONS="$OPTIONS --with-fp-layout=nothing"
 
 ./configure $OPTIONS
 
