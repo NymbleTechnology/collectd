@@ -177,7 +177,7 @@ static void sensu_close_socket(struct sensu_host *host) /* {{{ */
 static char *build_json_str_list(const char *tag, struct str_list const *list) /* {{{ */
 {
 	int res;
-	char *ret_str;
+	char *ret_str = NULL;
 	char *temp_str;
 	int i;
 	if (list->nb_strs == 0) {
@@ -192,6 +192,7 @@ static char *build_json_str_list(const char *tag, struct str_list const *list) /
 	res = asprintf(&temp_str, "\"%s\": [\"%s\"", tag, list->strs[0]);
 	if (res == -1) {
 		ERROR("write_sensu plugin: Unable to alloc memory");
+		free(ret_str);
 		return NULL;
 	}
 	for (i=1; i<list->nb_strs; i++) {
@@ -524,11 +525,10 @@ static char *replace_str(const char *str, const char *old, /* {{{ */
 	} else
 		retlen = strlen(str);
 
-	ret = malloc(retlen + 1);
+	ret = calloc(1, retlen + 1);
 	if (ret == NULL)
 		return NULL;
 	// added to original: not optimized, but keeps valgrind happy.
-	memset(ret, 0, retlen + 1);
 
 	r = ret;
 	p = str;

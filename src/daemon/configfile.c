@@ -257,7 +257,7 @@ static int dispatch_value_typesdb (oconfig_item_t *ci)
 static int dispatch_value_plugindir (oconfig_item_t *ci)
 {
 	assert (strcasecmp (ci->key, "PluginDir") == 0);
-	
+
 	if (ci->values_num != 1)
 		return (-1);
 	if (ci->values[0].type != OCONFIG_TYPE_STRING)
@@ -358,7 +358,7 @@ static int dispatch_value_plugin (const char *plugin, oconfig_item_t *ci)
 
 static int dispatch_value (oconfig_item_t *ci)
 {
-	int ret = -2;
+	int ret = 0;
 	int i;
 
 	for (i = 0; i < cf_value_map_num; i++)
@@ -514,7 +514,7 @@ static int cf_ci_replace_child (oconfig_item_t *dst, oconfig_item_t *src,
 		return (0);
 	}
 
-	temp = (oconfig_item_t *) realloc (dst->children,
+	temp = realloc (dst->children,
 			sizeof (oconfig_item_t)
 			* (dst->children_num + src->children_num - 1));
 	if (temp == NULL)
@@ -562,7 +562,7 @@ static int cf_ci_append_children (oconfig_item_t *dst, oconfig_item_t *src)
 	if ((src == NULL) || (src->children_num == 0))
 		return (0);
 
-	temp = (oconfig_item_t *) realloc (dst->children,
+	temp = realloc (dst->children,
 			sizeof (oconfig_item_t)
 			* (dst->children_num + src->children_num));
 	if (temp == NULL)
@@ -717,14 +717,13 @@ static oconfig_item_t *cf_read_dir (const char *dir,
 		return (NULL);
 	}
 
-	root = (oconfig_item_t *) malloc (sizeof (oconfig_item_t));
+	root = calloc (1, sizeof (*root));
 	if (root == NULL)
 	{
-		ERROR ("configfile: malloc failed.");
+		ERROR ("configfile: calloc failed.");
 		closedir (dh);
 		return (NULL);
 	}
-	memset (root, 0, sizeof (oconfig_item_t));
 
 	while ((de = readdir (dh)) != NULL)
 	{
@@ -750,7 +749,7 @@ static oconfig_item_t *cf_read_dir (const char *dir,
 		}
 
 		++filenames_num;
-		tmp = (char **) realloc (filenames,
+		tmp = realloc (filenames,
 				filenames_num * sizeof (*filenames));
 		if (tmp == NULL) {
 			ERROR ("configfile: realloc failed.");
@@ -835,13 +834,12 @@ static oconfig_item_t *cf_read_generic (const char *path,
 		return (NULL);
 	}
 
-	root = (oconfig_item_t *) malloc (sizeof (oconfig_item_t));
+	root = calloc (1, sizeof (*root));
 	if (root == NULL)
 	{
-		ERROR ("configfile: malloc failed.");
+		ERROR ("configfile: calloc failed.");
 		return (NULL);
 	}
-	memset (root, '\0', sizeof (oconfig_item_t));
 
 	/* wordexp() might return a sorted list already. That's not
 	 * documented though, so let's make sure we get what we want. */
@@ -926,7 +924,7 @@ static oconfig_item_t *cf_read_generic (const char *path,
 } /* oconfig_item_t *cf_read_generic */
 #endif /* !HAVE_WORDEXP_H */
 
-/* 
+/*
  * Public functions
  */
 int global_option_set (const char *option, const char *value)
@@ -969,7 +967,7 @@ const char *global_option_get (const char *option)
 
 	if (i >= cf_global_options_num)
 		return (NULL);
-	
+
 	return ((cf_global_options[i].value != NULL)
 			? cf_global_options[i].value
 			: cf_global_options[i].def);
@@ -1067,7 +1065,7 @@ void cf_register (const char *type,
 	cf_unregister (type);
 
 	/* This pointer will be free'd in `cf_unregister' */
-	if ((cf_cb = (cf_callback_t *) malloc (sizeof (cf_callback_t))) == NULL)
+	if ((cf_cb = malloc (sizeof (*cf_cb))) == NULL)
 		return;
 
 	cf_cb->type     = type;
@@ -1084,7 +1082,7 @@ int cf_register_complex (const char *type, int (*callback) (oconfig_item_t *))
 {
 	cf_complex_callback_t *new;
 
-	new = (cf_complex_callback_t *) malloc (sizeof (cf_complex_callback_t));
+	new = malloc (sizeof (*new));
 	if (new == NULL)
 		return (-1);
 
@@ -1119,6 +1117,7 @@ int cf_read (const char *filename)
 {
 	oconfig_item_t *conf;
 	int i;
+	int ret = 0;
 
 	conf = cf_read_generic (filename, /* pattern = */ NULL, /* depth = */ 0);
 	if (conf == NULL)
@@ -1136,18 +1135,27 @@ int cf_read (const char *filename)
 	for (i = 0; i < conf->children_num; i++)
 	{
 		if (conf->children[i].children == NULL)
-			dispatch_value (conf->children + i);
+		{
+			if (dispatch_value (conf->children + i) != 0)
+				ret = -1;
+		}
 		else
-			dispatch_block (conf->children + i);
+		{
+			if (dispatch_block (conf->children + i) != 0)
+				ret = -1;
+		}
 	}
 
 	oconfig_free (conf);
 
 	/* Read the default types.db if no `TypesDB' option was given. */
 	if (cf_default_typesdb)
-		read_types_list (PKGDATADIR"/types.db");
+	{
+		if (read_types_list (PKGDATADIR"/types.db") != 0)
+			ret = -1;
+	}
 
-	return (0);
+	return ret;
 } /* int cf_read */
 
 /* Assures the config option is a string, duplicates it and returns the copy in

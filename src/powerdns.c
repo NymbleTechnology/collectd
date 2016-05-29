@@ -465,7 +465,7 @@ static int powerdns_get_data_dgram (list_item_t *item, /* {{{ */
     return (-1);
 
   assert (buffer_size > 0);
-  buffer = (char *) malloc (buffer_size);
+  buffer = malloc (buffer_size);
   if (buffer == NULL)
   {
     FUNC_ERROR ("malloc");
@@ -542,7 +542,7 @@ static int powerdns_get_data_stream (list_item_t *item, /* {{{ */
     else if (status == 0)
       break;
 
-    buffer_new = (char *) realloc (buffer, buffer_size + status + 1);
+    buffer_new = realloc (buffer, buffer_size + status + 1);
     if (buffer_new == NULL)
     {
       FUNC_ERROR ("realloc");
@@ -799,7 +799,7 @@ static int powerdns_config_add_collect (list_item_t *li, /* {{{ */
       return (-1);
     }
 
-  temp = (char **) realloc (li->fields,
+  temp = realloc (li->fields,
       sizeof (char *) * (li->fields_num + ci->values_num));
   if (temp == NULL)
   {
@@ -840,13 +840,12 @@ static int powerdns_config_add_server (oconfig_item_t *ci) /* {{{ */
     return (-1);
   }
 
-  item = (list_item_t *) malloc (sizeof (list_item_t));
+  item = calloc (1, sizeof (*item));
   if (item == NULL)
   {
-    ERROR ("powerdns plugin: malloc failed.");
+    ERROR ("powerdns plugin: calloc failed.");
     return (-1);
   }
-  memset (item, '\0', sizeof (list_item_t));
 
   item->instance = strdup (ci->values[0].value.string);
   if (item->instance == NULL)

@@ -127,14 +127,13 @@ static statsd_metric_t *statsd_metric_lookup_unsafe (char const *name, /* {{{ */
     return (NULL);
   }
 
-  metric = malloc (sizeof (*metric));
+  metric = calloc (1, sizeof (*metric));
   if (metric == NULL)
   {
-    ERROR ("statsd plugin: malloc failed.");
+    ERROR ("statsd plugin: calloc failed.");
     sfree (key_copy);
     return (NULL);
   }
-  memset (metric, 0, sizeof (*metric));
 
   metric->type = type;
   metric->latency = NULL;
@@ -956,8 +955,6 @@ static int statsd_shutdown (void) /* {{{ */
   void *key;
   void *value;
 
-  pthread_mutex_lock (&metrics_lock);
-
   if (network_thread_running)
   {
     network_thread_shutdown = 1;
@@ -965,6 +962,8 @@ static int statsd_shutdown (void) /* {{{ */
     pthread_join (network_thread, /* retval = */ NULL);
   }
   network_thread_running = 0;
+
+  pthread_mutex_lock (&metrics_lock);
 
   while (c_avl_pick (metrics_tree, &key, &value) == 0)
   {

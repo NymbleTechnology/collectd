@@ -686,8 +686,8 @@ refresh_lists (void)
         int *domids;
 
         /* Get list of domains. */
-        domids = malloc (sizeof (int) * n);
-        if (domids == 0) {
+        domids = malloc (sizeof (*domids) * n);
+        if (domids == NULL) {
             ERROR (PLUGIN_NAME " plugin: malloc failed.");
             return -1;
         }

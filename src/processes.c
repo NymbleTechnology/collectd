@@ -128,7 +128,13 @@
 #  undef SAVE_FOB_64
 #endif
 
+# include <sys/user.h>
 # include <dirent.h>
+
+#ifndef MAXCOMLEN
+#  define MAXCOMLEN 16
+#endif
+
 /* #endif KERNEL_SOLARIS */
 
 #else
@@ -262,20 +268,19 @@ static void ps_list_register (const char *name, const char *regexp)
 	procstat_t *ptr;
 	int status;
 
-	new = (procstat_t *) malloc (sizeof (procstat_t));
+	new = calloc (1, sizeof (*new));
 	if (new == NULL)
 	{
-		ERROR ("processes plugin: ps_list_register: malloc failed.");
+		ERROR ("processes plugin: ps_list_register: calloc failed.");
 		return;
 	}
-	memset (new, 0, sizeof (procstat_t));
 	sstrncpy (new->name, name, sizeof (new->name));
 
 #if HAVE_REGEX_H
 	if (regexp != NULL)
 	{
 		DEBUG ("ProcessMatch: adding \"%s\" as criteria to process %s.", regexp, name);
-		new->re = (regex_t *) malloc (sizeof (regex_t));
+		new->re = malloc (sizeof (*new->re));
 		if (new->re == NULL)
 		{
 			ERROR ("processes plugin: ps_list_register: malloc failed.");
@@ -410,10 +415,9 @@ static void ps_list_add (const char *name, const char *cmdline, procstat_entry_t
 		{
 			procstat_entry_t *new;
 
-			new = (procstat_entry_t *) malloc (sizeof (procstat_entry_t));
+			new = calloc (1, sizeof (*new));
 			if (new == NULL)
 				return;
-			memset (new, 0, sizeof (procstat_entry_t));
 			new->id = entry->id;
 
 			if (pse == NULL)
@@ -540,6 +544,12 @@ static int ps_config (oconfig_item_t *ci)
 {
 	int i;
 
+#if KERNEL_LINUX
+	const size_t max_procname_len = 15;
+#elif KERNEL_SOLARIS || KERNEL_FREEBSD
+	const size_t max_procname_len = MAXCOMLEN -1;
+#endif
+
 	for (i = 0; i < ci->children_num; ++i) {
 		oconfig_item_t *c = ci->children + i;
 
@@ -559,6 +569,15 @@ static int ps_config (oconfig_item_t *ci)
 						"content (%i elements) of the <Process '%s'> block.",
 						c->children_num, c->values[0].value.string);
 			}
+
+#if KERNEL_LINUX || KERNEL_SOLARIS || KERNEL_FREEBSD
+			if (strlen (c->values[0].value.string) > max_procname_len) {
+				WARNING ("processes plugin: this platform has a %zu character limit "
+						"to process names. The `Process \"%s\"' option will "
+						"not work as expected.",
+						max_procname_len, c->values[0].value.string);
+			}
+#endif
 
 			ps_list_register (c->values[0].value.string, NULL);
 		}
@@ -1040,13 +1059,11 @@ static int ps_read_process (long pid, procstat_t *ps, char *state)
 	 * strchr(3) and strrchr(3) to avoid pointer arithmetic which would
 	 * otherwise be required to determine name_len. */
 	name_start_pos = 0;
-	while ((buffer[name_start_pos] != '(')
-			&& (name_start_pos < buffer_len))
+	while (name_start_pos < buffer_len && buffer[name_start_pos] != '(')
 		name_start_pos++;
 
 	name_end_pos = buffer_len;
-	while ((buffer[name_end_pos] != ')')
-			&& (name_end_pos > 0))
+	while (name_end_pos > 0 && buffer[name_end_pos] != ')')
 		name_end_pos--;
 
 	/* Either '(' or ')' is not found or they are in the wrong order.
@@ -1094,7 +1111,7 @@ static int ps_read_process (long pid, procstat_t *ps, char *state)
 			ps->vmem_code = -1;
 			DEBUG("ps_read_process: did not get vmem data for pid %li", pid);
 		}
-		if (ps->num_lwp <= 0)
+		if (ps->num_lwp == 0)
 			ps->num_lwp = 1;
 		ps->num_proc = 1;
 	}
@@ -1218,7 +1235,7 @@ static char *ps_get_cmdline (long pid, char *name, char *buf, size_t buf_len)
 		buf_ptr += status;
 		len     -= status;
 
-		if (len <= 0)
+		if (len == 0)
 			break;
 	}
 
@@ -1348,18 +1365,15 @@ static int ps_read_process(long pid, procstat_t *ps, char *state)
 	snprintf(f_usage, sizeof (f_usage), "/proc/%li/usage", pid);
 
 
-	buffer = malloc(sizeof (pstatus_t));
-	memset(buffer, 0, sizeof (pstatus_t));
+	buffer = calloc(1, sizeof (pstatus_t));
 	read_file_contents(filename, buffer, sizeof (pstatus_t));
 	myStatus = (pstatus_t *) buffer;
 
-	buffer = malloc(sizeof (psinfo_t));
-	memset(buffer, 0, sizeof(psinfo_t));
+	buffer = calloc(1, sizeof (psinfo_t));
 	read_file_contents(f_psinfo, buffer, sizeof (psinfo_t));
 	myInfo = (psinfo_t *) buffer;
 
-	buffer = malloc(sizeof (prusage_t));
-	memset(buffer, 0, sizeof(prusage_t));
+	buffer = calloc(1, sizeof (prusage_t));
 	read_file_contents(f_usage, buffer, sizeof (prusage_t));
 	myUsage = (prusage_t *) buffer;
 
@@ -1369,6 +1383,10 @@ static int ps_read_process(long pid, procstat_t *ps, char *state)
 		ps->num_proc = 0;
 		ps->num_lwp = 0;
 		*state = (char) 'Z';
+
+		sfree(myStatus);
+		sfree(myInfo);
+		sfree(myUsage);
 		return (0);
 	} else {
 		ps->num_proc = 1;

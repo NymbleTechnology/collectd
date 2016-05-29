@@ -98,14 +98,14 @@ static size_t apache_curl_callback (void *buf, size_t size, size_t nmemb,
 		return (0);
 	}
 
-	if (len <= 0)
+	if (len == 0)
 		return (len);
 
 	if ((st->apache_buffer_fill + len) >= st->apache_buffer_size)
 	{
 		char *temp;
 
-		temp = (char *) realloc (st->apache_buffer,
+		temp = realloc (st->apache_buffer,
 				st->apache_buffer_fill + len + 1);
 		if (temp == NULL)
 		{
@@ -137,7 +137,7 @@ static size_t apache_header_callback (void *buf, size_t size, size_t nmemb,
 		return (0);
 	}
 
-	if (len <= 0)
+	if (len == 0)
 		return (len);
 
 	/* look for the Server header */
@@ -175,13 +175,12 @@ static int config_add (oconfig_item_t *ci)
 	int i;
 	int status;
 
-	st = malloc (sizeof (*st));
+	st = calloc (1, sizeof (*st));
 	if (st == NULL)
 	{
-		ERROR ("apache plugin: malloc failed.");
+		ERROR ("apache plugin: calloc failed.");
 		return (-1);
 	}
-	memset (st, 0, sizeof (*st));
 
 	st->timeout = -1;
 

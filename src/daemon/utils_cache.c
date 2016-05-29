@@ -83,13 +83,12 @@ static cache_entry_t *cache_alloc (size_t values_num)
 {
   cache_entry_t *ce;
 
-  ce = (cache_entry_t *) malloc (sizeof (cache_entry_t));
+  ce = calloc (1, sizeof (*ce));
   if (ce == NULL)
   {
-    ERROR ("utils_cache: cache_alloc: malloc failed.");
+    ERROR ("utils_cache: cache_alloc: calloc failed.");
     return (NULL);
   }
-  memset (ce, '\0', sizeof (cache_entry_t));
   ce->values_num = values_num;
 
   ce->values_gauge = calloc (values_num, sizeof (*ce->values_gauge));
@@ -247,7 +246,7 @@ int uc_check_timeout (void)
 
   int status;
   int i;
-  
+
   pthread_mutex_lock (&cache_lock);
 
   now = cdtime ();
@@ -264,7 +263,7 @@ int uc_check_timeout (void)
       continue;
 
     /* If entry has not been updated, add to `keys' array */
-    tmp = (char **) realloc ((void *) keys,
+    tmp = realloc ((void *) keys,
 	(keys_len + 1) * sizeof (char *));
     if (tmp == NULL)
     {
@@ -499,7 +498,7 @@ int uc_get_rate_by_name (const char *name, gauge_t **ret_values, size_t *ret_val
     else
     {
       ret_num = ce->values_num;
-      ret = (gauge_t *) malloc (ret_num * sizeof (gauge_t));
+      ret = malloc (ret_num * sizeof (*ret));
       if (ret == NULL)
       {
         ERROR ("utils_cache: uc_get_rate_by_name: malloc failed.");
@@ -691,7 +690,7 @@ int uc_set_state (const data_set_t *ds, const value_list_t *vl, int state)
 
   if (FORMAT_VL (name, sizeof (name), vl) != 0)
   {
-    ERROR ("uc_get_state: FORMAT_VL failed.");
+    ERROR ("uc_set_state: FORMAT_VL failed.");
     return (STATE_ERROR);
   }
 
@@ -799,7 +798,7 @@ int uc_get_hits (const data_set_t *ds, const value_list_t *vl)
 
   if (FORMAT_VL (name, sizeof (name), vl) != 0)
   {
-    ERROR ("uc_get_state: FORMAT_VL failed.");
+    ERROR ("uc_get_hits: FORMAT_VL failed.");
     return (STATE_ERROR);
   }
 
@@ -824,7 +823,7 @@ int uc_set_hits (const data_set_t *ds, const value_list_t *vl, int hits)
 
   if (FORMAT_VL (name, sizeof (name), vl) != 0)
   {
-    ERROR ("uc_get_state: FORMAT_VL failed.");
+    ERROR ("uc_set_hits: FORMAT_VL failed.");
     return (STATE_ERROR);
   }
 
@@ -850,7 +849,7 @@ int uc_inc_hits (const data_set_t *ds, const value_list_t *vl, int step)
 
   if (FORMAT_VL (name, sizeof (name), vl) != 0)
   {
-    ERROR ("uc_get_state: FORMAT_VL failed.");
+    ERROR ("uc_inc_hits: FORMAT_VL failed.");
     return (STATE_ERROR);
   }
 
