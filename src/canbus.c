@@ -76,16 +76,16 @@ typedef struct { counter_t value; } tSimpleCounter;
 
 static data_source_t dsBoundsGauge[4] =
 {
-    { "value",   DS_TYPE_GAUGE, NAN, NAN },
+    { "last",    DS_TYPE_GAUGE, NAN, NAN },
     { "average", DS_TYPE_GAUGE, NAN, NAN },
-    { "lowest",  DS_TYPE_GAUGE, NAN, NAN },
-    { "highest", DS_TYPE_GAUGE, NAN, NAN }
+    { "minimum", DS_TYPE_GAUGE, NAN, NAN },
+    { "maximum", DS_TYPE_GAUGE, NAN, NAN }
 };
 
 typedef struct
 {
     /* MUST be in this order */
-    gauge_t   value, average, lowest, highest;
+    gauge_t   last, average, minimum, maximum;
     /* MUST be in this order */
 
     double    sum;
@@ -127,11 +127,9 @@ static struct
 
     } accumulated;
     /* mechanical switch that indicates the refueling port is connected */
-    tSimpleGauge  refuelPort; /* don't both tracking min/max seen */
-    /* not a precise value, advisory only */
-    tSimpleGauge  fuelLevel;
+    tSimpleGauge  refuelPort; /* don't bother tracking min/max seen */
 
-    /* * * CAN message 0x220 * * */
+    /* * * CAN message 0x211 * * */
     struct
     {
         tBoundsGauge  voltage;
@@ -139,7 +137,7 @@ static struct
 
     } input, output;
 
-    /* * * CAN message 0x230 * * */
+    /* * * CAN message 0x212 * * */
     struct
     {
         tBoundsGauge  pressure;     /* units of 0.1 bar */
@@ -156,7 +154,6 @@ typedef enum
 	kAccumulatedPower,
 	kAccumulatedHours,
 	kRefuelPort,
-	kFuelLevel,
 	kInputVoltage,
 	kInputCurrent,
 	kOutputVoltage,
@@ -196,44 +193,39 @@ tDataSet dataSet[kNumDataSet] =
         { "refuelPort", 1, dsSimpleGauge },
         { (value_t *)&fuelCell.refuelPort.value, 1, 0, 0, HOSTNAME, PLUGIN, "", "refuelPort", "", NULL }
     },
-    [kFuelLevel] = {
-        kSimpleGauge, { .gauge = &fuelCell.fuelLevel },
-        { "fuelLevel", 1, dsSimpleGauge },
-        { (value_t *)&fuelCell.fuelLevel.value, 1, 0, 0, HOSTNAME, PLUGIN, "", "fuelLevel", "", NULL }
-    },
 
-    /* * * CAN message 0x220 * * */
+    /* * * CAN message 0x211 * * */
     [kInputVoltage] = {
         kBoundsGauge, { .bounds = &fuelCell.input.voltage },
         { "inputVoltage", 4, dsBoundsGauge },
-        { (value_t *)&fuelCell.input.voltage.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "inputVoltage", "", NULL }
+        { (value_t *)&fuelCell.input.voltage.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "inputVoltage", "", NULL }
     },
     [kInputCurrent] = {
         kBoundsGauge, { .bounds = &fuelCell.input.current },
         { "inputCurrent", 4, dsBoundsGauge },
-        { (value_t *)&fuelCell.input.current.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "inputCurrent", "", NULL }
+        { (value_t *)&fuelCell.input.current.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "inputCurrent", "", NULL }
     },
     [kOutputVoltage] = {
         kBoundsGauge, { .bounds = &fuelCell.output.voltage },
         { "outputVoltage", 4, dsBoundsGauge },
-        { (value_t *)&fuelCell.output.voltage.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "outputVoltage", "", NULL }
+        { (value_t *)&fuelCell.output.voltage.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "outputVoltage", "", NULL }
     },
     [kOutputCurrent] = {
         kBoundsGauge, { .bounds = &fuelCell.output.current },
         { "outputCurrent", 4, dsBoundsGauge },
-        { (value_t *)&fuelCell.output.current.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "outputCurrent", "", NULL }
+        { (value_t *)&fuelCell.output.current.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "outputCurrent", "", NULL }
     },
 
-    /* * * CAN message 0x230 * * */
+    /* * * CAN message 0x212 * * */
     [kH2tankPressure] = {
         kBoundsGauge, { .bounds = &fuelCell.h2tank.pressure },
         { "tankPressure", 4, dsBoundsGauge },
-        { (value_t *)&fuelCell.h2tank.pressure.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "tankPressure", "", NULL }
+        { (value_t *)&fuelCell.h2tank.pressure.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "tankPressure", "", NULL }
     },
     [kH2tankTemperature] = {
         kBoundsGauge, { .bounds = &fuelCell.h2tank.temperature },
         { "tankTemperature", 4, dsBoundsGauge   },
-        { (value_t *)&fuelCell.h2tank.temperature.value, 4, 0, 0, HOSTNAME, PLUGIN, "", "tankTemperature", "", NULL }
+        { (value_t *)&fuelCell.h2tank.temperature.last, 4, 0, 0, HOSTNAME, PLUGIN, "", "tankTemperature", "", NULL }
     },
     [kErrorCode] = {
         kSimpleGauge, { .gauge = &fuelCell.errorCode },
@@ -242,7 +234,7 @@ tDataSet dataSet[kNumDataSet] =
     }
 };
 
-#define NUM_CANBUS 2
+#define NUM_CANBUS 1
 static struct
 {
     int socket;
@@ -275,17 +267,17 @@ void updateBoundsGauge( eDataSetIdx ds, gauge_t newValue )
     ++bounds->count;
     bounds->average = bounds->sum / bounds->count;
 
-    if ( bounds->value != newValue )
+    if ( bounds->last != newValue )
     {
-        bounds->value = newValue;
+        bounds->last = newValue;
 
-        if ( newValue < bounds->lowest )
+        if ( newValue < bounds->minimum )
         {
-            bounds->lowest = newValue;
+            bounds->minimum = newValue;
         }
-        if ( newValue > bounds->highest )
+        if ( newValue > bounds->maximum )
         {
-            bounds->highest = newValue;
+            bounds->maximum = newValue;
         }
     }
 }
@@ -299,8 +291,8 @@ void resetBoundsGauge( eDataSetIdx ds )
         bounds->sum  /= bounds->count;
         bounds->count = 1;
     }
-    bounds->lowest  = bounds->value;
-    bounds->highest = bounds->value;
+    bounds->minimum = bounds->last;
+    bounds->maximum = bounds->last;
 }
 
 static int CreateCANsocket( int interface )
@@ -312,22 +304,42 @@ static int CreateCANsocket( int interface )
     result = -3;
     if ( interface >= NUM_CANBUS )
     {
+        plugin_log(LOG_ERR, "CAN interface %d does not exist", interface);
+    }
+    else
+    {
         result = -2;
         /* Create the socket */
         CANbus[interface].socket = socket( PF_CAN, SOCK_RAW, CAN_RAW );
 
-        if ( CANbus[interface].socket != -1 )
+        if ( CANbus[interface].socket == -1 )
+        {
+            plugin_log(LOG_ERR, "canbus: could not create a CAN socket (%d - %s)", errno, strerror(errno));
+        }
+        else
         {
             /* Locate the interface you wish to use */
             sprintf( ifr.ifr_name, "can%d", interface );
             result = ioctl( CANbus[interface].socket, SIOCGIFINDEX, &ifr );
             /* if successful, Ifr.ifr_ifindex will be set to that device's index */
-            if ( result != -1 )
+            if ( result == -1 )
+            {
+                plugin_log(LOG_ERR, "canbus: could not find %s (%d - %s)", ifr.ifr_name, errno, strerror(errno));
+            }
+            else
             {
                 /* Select that CAN interface, and bind the socket to it.*/
                 addr.can_family  = AF_CAN;
                 addr.can_ifindex = ifr.ifr_ifindex;
                 result = bind( CANbus[interface].socket, (struct sockaddr *)&addr, sizeof( addr ) );
+                if (result == -1)
+                {
+                    plugin_log(LOG_ERR, "canbus: unable to bind to %s (%d - %s)", ifr.ifr_name, errno, strerror(errno));
+                }
+                else
+                {
+                    plugin_log(LOG_INFO, "canbus: bound to %s", ifr.ifr_name);
+                }
             }
         }
     }
@@ -343,58 +355,6 @@ static int DestroyCANsocket( int interface )
     }
     return 0;
 }
-
-#if 0
-static int SendCANframe( int interface )
-{
-    /* Send a message to the CAN bus */
-    struct can_frame t_Frame;
-    int bytesSent;
-
-    t_Frame.can_id = 0x123;
-    strcpy( t_Frame.data, "foo" );
-    t_Frame.can_dlc = strlen( t_Frame.data );
-    bytesSent = write( CANbus[interface].socket, &t_Frame, sizeof( t_Frame ) );
-    return bytesSent;
-}
-
-{
-    /* Read a message back from the CAN bus */
-    struct can_frame t_Frame;
-    sint16 s16_BytesRead = read( CANbus[interface].socket, &t_Frame, sizeof( t_Frame ) );
-}
-
-void ParseCANMsg( const unsigned short msgID, const unsigned char *body )
-{
-    switch ( msgID )
-    {
-    case 0x210:
-        updateSimpleGauge(   kPowerPackID,       body[0] | (body[1] << 8));
-        updateSimpleCounter( kAccumulatedPower,  body[2] | (body[3] << 8) );
-        updateSimpleCounter( kAccumulatedHours,  body[4] | (body[5] << 8) );
-        updateSimpleGauge(   kRefuelPort,        body[6] );
-        updateSimpleGauge(   kFuelLevel,         body[7] );
-        break;
-
-    case 0x220:
-        updateBoundsGauge(   kOutputCurrent,     (body[0] | (body[1] << 8)) / 10 );
-        updateBoundsGauge(   kInputCurrent,      (body[2] | (body[3] << 8)) / 10 );
-        updateBoundsGauge(   kOutputVoltage,     (body[4] | (body[5] << 8)) / 10 );
-        updateBoundsGauge(   kInputVoltage,      (body[6] | (body[7] << 8)) / 10 );
-        break;
-
-    case 0x230:
-        updateBoundsGauge(   kH2tankPressure,    (body[0] | (body[1] << 8)) / 10 );
-        updateBoundsGauge(   kH2tankTemperature, (body[2] | (body[3] << 8)) / 10 );
-        updateSimpleGauge(   kErrorCode,
-                             body[4] | (body[5] << 8) | (body[6] << 16) | (body[7] << 24) );
-        break;
-
-    default:
-        break;
-    }
-}
-#endif
 
 void SendTimeMsg( void )
 {
@@ -415,12 +375,12 @@ void SendTimeMsg( void )
         body[5] = time->tm_sec;         /* seconds    (0-59) */
         body[6] = now.tv_usec / 10000;  /* hundredths (0-99) */
 
-        body[7] = 0;                    /* not currently used */
+        body[7] = 0;                    /* 'fuel level' - not currently used */
     }
     body[0] = body[0];
 }
 
-#define SIMULATED
+#undef  SIMULATED
 #ifdef  SIMULATED
 int simulateCANmessage( struct can_frame *frame, size_t size)
 {
@@ -444,15 +404,14 @@ static canid_t canID = 0x210;
         /* accumulated hours */
         body[4] = random();
         body[5] = random();
+        body[6] = random();
         /* refuel port detect */
-        body[6] = random() & 1;
-        /* fuel level */
-        body[7] = random() % 100;
+        body[7] = random() & 1;
 
-        canID = 0x220;  /* next frame to send */
+        canID = 0x211;  /* next frame to send */
         break;
 
-    case 0x220:
+    case 0x211:
         /* output current */
         body[0] = random();
         body[1] = random();
@@ -466,10 +425,10 @@ static canid_t canID = 0x210;
         body[6] = random();
         body[7] = (520 >> 8);
 
-        canID = 0x230;  /* next frame to send */
+        canID = 0x212;  /* next frame to send */
         break;
 
-    case 0x230:
+    case 0x212:
         /* H2 Tank Pressure */
         body[0] = random();
         body[1] = random();
@@ -548,25 +507,24 @@ void *backgroundThread( void *arg )
                     switch ( canID )
                     {
                     case 0x210:
-                        updateSimpleGauge(   kPowerPackID,      body[0] | (body[1] << 8));
-                        updateSimpleCounter( kAccumulatedPower, body[2] | (body[3] << 8) );
-                        updateSimpleCounter( kAccumulatedHours, body[4] | (body[5] << 8) );
-                        updateSimpleGauge(   kRefuelPort,       body[6] );
-                        updateSimpleGauge(   kFuelLevel,        body[7] );
+                        updateSimpleGauge(   kPowerPackID,      (body[1] << 8) | body[0] );
+                        updateSimpleCounter( kAccumulatedPower, (body[3] << 8) | body[2] );
+                        updateSimpleCounter( kAccumulatedHours, (body[6] << 16) | (body[5] << 8) | body[4] );
+                        updateSimpleGauge(   kRefuelPort,       body[7] );
                         break;
 
-                    case 0x220:
-                        updateBoundsGauge( kOutputCurrent, (body[0] | (body[1] << 8)) / 10 );
-                        updateBoundsGauge( kInputCurrent,  (body[2] | (body[3] << 8)) / 10 );
-                        updateBoundsGauge( kOutputVoltage, (body[4] | (body[5] << 8)) / 10 );
-                        updateBoundsGauge( kInputVoltage,  (body[6] | (body[7] << 8)) / 10 );
+                    case 0x211:
+                        updateBoundsGauge( kOutputCurrent, ((body[1] << 8) | body[0]) / 10 );
+                        updateBoundsGauge( kInputCurrent,  ((body[3] << 8) | body[2]) / 10 );
+                        updateBoundsGauge( kOutputVoltage, ((body[5] << 8) | body[4]) / 10 );
+                        updateBoundsGauge( kInputVoltage,  ((body[7] << 8) | body[6]) / 10 );
                         break;
 
-                    case 0x230:
-                        updateBoundsGauge( kH2tankPressure,    (body[0] | (body[1] << 8)) / 10 );
-                        updateBoundsGauge( kH2tankTemperature, (body[2] | (body[3] << 8)) / 10 );
+                    case 0x212:
+                        updateBoundsGauge( kH2tankPressure,    ((body[1] << 8) | body[0]) / 10 );
+                        updateBoundsGauge( kH2tankTemperature, ((body[3] << 8) | body[2]) / 10 );
                         updateSimpleGauge( kErrorCode,
-                                           body[4] | (body[5] << 8) | (body[6] << 16) | (body[7] << 24) );
+                                           (body[7] << 24) | (body[6] << 16) | (body[5] << 8) | body[4] );
                         break;
 
                     default:
@@ -593,14 +551,7 @@ static int CANbusInit( void )
     int result;
     int i;
     /* Set up anything that can't easily be statically initialized */
-/*
-    char hostname[HOST_NAME_MAX];
 
-    if ( gethostname(hostname, sizeof(hostname)) != 0 )
-    {
-        sstrncpy(hostname, HOSTNAME, sizeof(hostname));
-    }
-*/
     for ( i = 0; i < kNumDataSet; ++i )
     {
         /* fix up the host field of all value_list_t structures */
@@ -643,10 +594,13 @@ static int CANbusRead( void )
     /* grab the lock, to serialize access to the CANbus parameters  */
     pthread_mutex_lock( &background.lock );
 
+    /* dispatch any values that have changed since the last read */
     for ( i = 0; i < kNumDataSet; ++i )
     {
         if ( dataSet[i].seqID == fuelCell.seqID )
         {
+            /* dispatch the values to collectd core, which passes
+               them on to all configured write functions */
             plugin_dispatch_values( &dataSet[i].valueList );
 
             if (dataSet[i].type == kBoundsGauge)
@@ -654,62 +608,16 @@ static int CANbusRead( void )
         }
     }
 
-    /* changing the sequence ID makes all variables are now 'clean' */
+    /* increasing the sequence ID makes all variables 'clean' again */
     ++fuelCell.seqID;
 
     pthread_mutex_unlock( &background.lock );
 
-    /*  dispatch the values to collectd which passes them on to all registered
-        write functions */
-
-    /*  A return value != 0 indicates an error and the plugin will be skipped
-        for an increasing amount of time. */
+    /* A return value != 0 indicates an error and the plugin
+       will be skipped for an increasing amount of time. */
     return 0;
 }
 
-#if 0
-/**
-    Called after values have been dispatched to collectd.
-*/
-static int CANbusWrite( const data_set_t *ds, const value_list_t *vl, user_data_t *ud )
-{
-    int  result = 0;
-    char name[512] = "";
-    char value[512] = "";
-    char time[RFC3339_SIZE];
-
-    result = rfc3339( time, sizeof( time ), vl->time );
-    if ( result == 0 )
-    {
-        /* get the default base filename for the output file - depending
-           on the provided values this will be something like
-           <host>/<plugin>[-<plugin_type>]/<instance>[-<instance_type>] */
-        result = format_name( name, sizeof( name ), vl->host,
-                              vl->plugin, vl->plugin_instance,
-                              ds->type,   vl->type_instance );
-    }
-
-    if ( result == 0 )
-    {
-        result = format_values( value, sizeof( value ), ds, vl, 0 );
-    }
-
-    if ( result == 0 )
-    {
-        printf( "[%s] %s = %s\n", time, name, value );
-    }
-
-    return result;
-}
-#endif // 0
-
-/**
-    Called when plugin_log() has been used.
-*/
-static void CANbusLog( int severity, const char *msg, user_data_t *ud )
-{
-    printf( "LOG: %i - %s\n", severity, msg );
-}
 
 /**
     Called when plugin_dispatch_notification () has been used.
@@ -741,21 +649,21 @@ static int CANbusNotify( const notification_t *notif, user_data_t *ud )
 
 
 /**
-    Called after loading the plugin, so that we
-    can register our entrypoints with collectd.
+    Called immediately after loading the plugin. Must
+    register our entry points with the collectd core.
 */
 void module_register( void )
 {
     int i;
-        /* register all the data sets */
+
+    plugin_register_init( PLUGIN, CANbusInit );
+
+    /* register all of our data sets */
     for ( i = 0; i < kNumDataSet; ++i )
         { plugin_register_data_set( &dataSet[i].dataSet ); }
 
-    plugin_register_notification( PLUGIN, CANbusNotify, NULL );
-    plugin_register_log( PLUGIN, CANbusLog, NULL );
     plugin_register_read( PLUGIN, CANbusRead );
-    //plugin_register_write( PLUGIN, CANbusWrite, NULL );
+    plugin_register_notification( PLUGIN, CANbusNotify, NULL );
 
     plugin_register_shutdown( PLUGIN, CANbusShutdown );
-    plugin_register_init( PLUGIN, CANbusInit );
 }
